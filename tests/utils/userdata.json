@@ -1,0 +1,20 @@
+{
+    "post": {
+      "createUser": {
+        "name": "morpheus",
+        "job": "leader"
+      }
+    },
+    "put": {
+      "updateUser": {
+        "name": "morpheus",
+        "job": "zion resident"
+      }
+    },
+    "patch": {
+      "partialUpdateUser": {
+          "name": "morpheus",
+          "job": "manager"
+      }
+    }
+}

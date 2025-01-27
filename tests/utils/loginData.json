@@ -1,0 +1,21 @@
+[
+    {
+      "description": "Valid user credentials",
+      "data": {
+        "email": "eve.holt@reqres.in",
+        "password": "cityslicka"
+      },
+      "expectedStatus": 200,
+      "expectedFields": "token"
+    },
+    {
+      "description": "Invalid user (missing password)",
+      "data": {
+        "email": "peter@klaven",
+        "password": ""
+
+      },
+      "expectedStatus": 400,
+      "expectedError": "Missing password"
+    }
+]
