@@ -1,12 +1,11 @@
 import { test, expect, request } from '@playwright/test';
 import userdata from './utils/userdata.json'
-import { baseURL } from '../playwright.config';
 
 test.describe('Update existing user credentials using put request', () => {
 
     let updatedUser: Record<string, any>;
     let inputData = userdata.put.updateUser;
-    test.beforeAll('Send request and get success status code', async({request}) => {
+    test.beforeAll('Send request and get success status code', async({baseURL,request}) => {
         const user_id = 2;
         const response = await request.put(`${baseURL}/users/${user_id}`,{
             data: inputData,
@@ -19,8 +18,6 @@ test.describe('Update existing user credentials using put request', () => {
         expect(updatedUser.name).toBe(inputData.name);
         expect(updatedUser.job).toBe(inputData.job);
         expect(updatedUser.updatedAt).toBeDefined();
-
-        console.log('User created successfully (POST):', updatedUser);
     });
     
 });

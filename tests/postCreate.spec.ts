@@ -1,12 +1,11 @@
 import { test, expect, request } from '@playwright/test';
 import userdata from './utils/userdata.json'
-import { baseURL } from '../playwright.config';
 
 test.describe('Create new user using post request', () => {
 
     let createdUser: Record<string, any>;
     let inputData = userdata.post.createUser;
-    test.beforeAll('Send request and get success status code', async({request}) => {
+    test.beforeAll('Send request and get success status code', async({baseURL,request}) => {
         const response = await request.post(`${baseURL}/users`,{
             data: inputData,
         });
@@ -19,8 +18,6 @@ test.describe('Create new user using post request', () => {
         expect(createdUser.job).toBe(inputData.job);
         expect(createdUser.id).toBeDefined();
         expect(createdUser.createdAt).toBeDefined();
-
-        console.log('User created successfully (POST):', createdUser);
     });
     
 });

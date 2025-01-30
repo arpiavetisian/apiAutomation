@@ -1,8 +1,7 @@
 import { test, expect, request } from '@playwright/test';
-import { baseURL } from '../playwright.config';
 
 let checkdata: Record<string, any>;
-test('Check delete request and get expected status code', async({request}) => {
+test('Check delete request and get expected status code', async({baseURL,request}) => {
 
     const del_id = 2;
     const response = await request.delete(`${baseURL}/users/${del_id}`);

@@ -1,43 +1,37 @@
-import { test, expect, APIRequest} from "@playwright/test";
-import { baseURL } from "../playwright.config.ts";
-import { validate } from 'jsonschema';
+import { test, expect} from "@playwright/test";
 import * as Helpers from "./utils/helperfuncs.js";
-import allUsersSchema from '../schemas/allUsersSchema.json'
+import {userSchema} from '../schemas/allUsersSchema.ts';
+import Ajv from "ajv";
+import addFormats from "ajv-formats";
+
+const ajv = new Ajv({ allErrors: true });
+addFormats(ajv);
 
 //Defining describe test for get request of ALL users and including each test regarding to it.
-
 test.describe('Get All Users and validate schema', () => {
     
     let allResponse: Record<string, any>;
-
-    test.beforeAll('Validate Response Status Code and the quantity of users in response', async({request})  => {
+    test.beforeAll('Validate Response Status Code and the quantity of users in response', async({baseURL, request})  => {
         const allUserURL = `${baseURL}/users?page=2`;
         const response = await request.get(allUserURL)
         expect(response.status()).toBe(200);
 
         allResponse = await response.json();
-
     });
 
     test('Validate response schema and values', () => {
         // Validate the response against the JSON schema
-        const validationResult = validate(allResponse, allUsersSchema);
-
-        // Assert the validation passed
-        expect(validationResult.valid).toBe(true);
-
-        // Log validation errors if any
-        if (!validationResult.valid) {
-            console.error('Schema validation errors:', validationResult.errors);
-        }
-
-        // Validating page number and overall data length
+        const validate = ajv.compile(userSchema);
+        const valid = validate(allResponse);
+        expect(valid).toBe(true);
+        
+        //Cheking response details
         expect(allResponse.page).toBe(2);
         expect(allResponse.data.length).toBeGreaterThan(0);
     });
 
-    // Ensure proper error handling for invalid input for page as query parameter
-    test("Should return error for invalid page number", async ({ request }) => {
+    //Ensure proper error handling for invalid input for page as query parameter
+    test("Should return error for invalid page number", async ({baseURL, request }) => {
         const response_ = await request.get(`${baseURL}/users?page=abc`);
         expect(response_.status()).toBe(400); 
     });    
@@ -50,7 +44,7 @@ test.describe('Get request for single users for both existing and non-existing u
     let user_id = 2;
     let singleBody: Record<string, any>;
 
-    test.beforeAll('Get singke user data and check status code', async({request}) =>{
+    test.beforeAll('Get singke user data and check status code', async({baseURL,request}) =>{
         const singleURL = `${baseURL}/users/${user_id}`;
 
         const respsingle = await request.get(singleURL);
@@ -67,7 +61,7 @@ test.describe('Get request for single users for both existing and non-existing u
         expect(userData.id).toBe(user_id);
     });
 
-    test('Get request for non-existing user, shoulg get empty object', async({request}) => {
+    test('Get request for non-existing user, shoulg get empty object', async({baseURL,request}) => {
         user_id = 23;
         const checkURL = `${baseURL}/users/${user_id}`;
 
@@ -84,7 +78,7 @@ test.describe('Get delayed page of users', () => {
         
     let delayedResp: Record<string, any>;
     
-    test.beforeAll('Validate get request for delayed page of users', async({request}) => {
+    test.beforeAll('Validate get request for delayed page of users', async({baseURL, request}) => {
         const delayedURL = `${baseURL}/users?delay=3`
         const response = await request.get(delayedURL);
 

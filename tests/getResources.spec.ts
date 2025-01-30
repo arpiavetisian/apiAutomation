@@ -1,5 +1,4 @@
 import { test, expect, request} from "@playwright/test";
-import { baseURL } from "../playwright.config.ts";
 import * as Helpers from "./utils/helperfuncs.js";
 
 //Making test description for the get request of all resources list 
@@ -7,7 +6,7 @@ test.describe('Validation of all resources get request', () => {
 
     let allResources: Record<string, any>;
 
-    test.beforeAll('Get all results of resources and validate status code', async({request}) => {
+    test.beforeAll('Get all results of resources and validate status code', async({baseURL,request}) => {
         const response = await request.get(`${baseURL}/unknown`)
 
         expect(response.status()).toBe(200);
@@ -33,7 +32,7 @@ test.describe('Validate response for single resource get request and for non-exi
     let res_id = 2;
     let singleRes: Record<string, any>;
 
-    test.beforeAll('Get existing single response and check status code', async({request}) => {
+    test.beforeAll('Get existing single response and check status code', async({baseURL, request}) => {
         const respresource = await request.get(`${baseURL}/unknown/2`);
 
         expect(respresource.status()).toBe(200);
@@ -47,7 +46,7 @@ test.describe('Validate response for single resource get request and for non-exi
         Helpers.checkResourceInfo(resData);
     });
 
-    test('Verify that for non-existing users 404 status code and empty response is returned', async({request}) =>{
+    test('Verify that for non-existing users 404 status code and empty response is returned', async({baseURL,request}) =>{
         res_id = 23;
         const noresURL = `${baseURL}/users/${res_id}`;
 
