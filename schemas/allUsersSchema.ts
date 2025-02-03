@@ -2,7 +2,7 @@ export const userSchema = {
   "type": "object",
   "properties": {
     "page": { "type": "integer" },
-    "per_page": { "type": "integer" },
+    "per_page": { "type": "string" },
     "total": { "type": "integer" },
     "total_pages": { "type": "integer" },
     "data": {

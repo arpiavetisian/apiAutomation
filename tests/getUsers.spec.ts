@@ -23,9 +23,15 @@ test.describe('Get All Users and validate schema', () => {
         // Validate the response against the JSON schema
         const validate = ajv.compile(userSchema);
         const valid = validate(allResponse);
+
+        //Logging the error when validation fails
+        if(!valid){
+            console.error(validate.errors);
+        }
+
         expect(valid).toBe(true);
-        
-        //Cheking response details
+
+        //Checking response details after successful validation
         expect(allResponse.page).toBe(2);
         expect(allResponse.data.length).toBeGreaterThan(0);
     });
@@ -44,7 +50,7 @@ test.describe('Get request for single users for both existing and non-existing u
     let user_id = 2;
     let singleBody: Record<string, any>;
 
-    test.beforeAll('Get singke user data and check status code', async({baseURL,request}) =>{
+    test.beforeAll('Get single user data and check status code', async({baseURL,request}) =>{
         const singleURL = `${baseURL}/users/${user_id}`;
 
         const respsingle = await request.get(singleURL);
@@ -61,7 +67,7 @@ test.describe('Get request for single users for both existing and non-existing u
         expect(userData.id).toBe(user_id);
     });
 
-    test('Get request for non-existing user, shoulg get empty object', async({baseURL,request}) => {
+    test('Get request for non-existing user, should get empty object', async({baseURL,request}) => {
         user_id = 23;
         const checkURL = `${baseURL}/users/${user_id}`;
 
